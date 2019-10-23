@@ -14,11 +14,13 @@ maintainer:          top-thomas@live.nl
 -- copyright:
 category:            Game
 build-type:          Simple
-extra-source-files:  README.md, CHANGELOG.md
+extra-source-files:  README.md
 
 executable Pacman
   main-is:             Main.hs
-  -- other-modules:
+  other-modules:       Controller,
+                       Pacman,
+                       View
   -- other-extensions:
   build-depends:       base >=4.12 && <4.13,
                        gloss,
