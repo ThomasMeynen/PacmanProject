@@ -7,4 +7,7 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gstate = color blue (polygon [(0,0),(100,0),(100,100),(0,100)])
+viewPure gstate = pictures ((pacmanview gstate) : ((ghosts gstate) ++ (board gstate))) where
+    pacmanview GameState {pacman = ( Pacman (x,y) _ _)} = translate x y (color yellow (circleSolid 10))
+    ghosts gstate = []
+    board gstate = []
