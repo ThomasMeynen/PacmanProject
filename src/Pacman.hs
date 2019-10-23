@@ -10,23 +10,29 @@ data GameState = GameState {
     }
 
 data Pacman = Pacman (Float, Float) Direction Speed
-data Field  = M|D|L
-data Direction = N|O|Z|W
+data Field  = M|D|L --Muren, Dots, Leeg
+data Direction = N|O|Z|W --Noord, Oost, Zuid, West
 data Ghost  = Ghost (Float, Float) Direction Speed
 
 type Row   = [Field]
 type Maze  = [Row]
 type Speed = Float
 
+xfields :: Int
+xfields = 28
+yfields :: Int
+yfields = 31
+fieldsize :: Int
+fieldsize = 20
 xsize :: Int
-xsize = 400
+xsize = xfields * fieldsize
 ysize :: Int
-ysize = 400
+ysize = yfields * fieldsize
 
 initialState :: GameState
-initialState = GameState replicate 31 (replicate 27 M)
-                         (Pacman (-100,-100) W 3)
-                         (Ghost (1.0,0) W 2)
-                         (Ghost (1.0,0) W 2)
-                         (Ghost (1.0,0) W 2)
-                         (Ghost (1.0,0) W 2)
+initialState = GameState (replicate yfields (replicate xfields L))
+                         (Pacman (-150,150) O 3)
+                         (Ghost (0,0) W 2)
+                         (Ghost (0,0) W 2)
+                         (Ghost (0,0) W 2)
+                         (Ghost (0,0) W 2)
