@@ -28,4 +28,4 @@ viewPure gstate = pictures ((pacmanview gstate) : ((pauseview gstate) : ((ghostv
                 transform :: Int -> Int -> Float
                 transform pos length = fromIntegral ((pos - (half length)) * fieldsize) :: Float
                 half :: Int -> Int
-                half int = round ((fromIntegral int :: Float) / 2)
+                half int = floor ((fromIntegral int :: Float) / 2)

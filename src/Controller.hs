@@ -1,6 +1,7 @@
 module Controller where
 
 import Pacman
+import BreathFirstSearch
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game

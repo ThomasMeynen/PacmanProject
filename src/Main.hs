@@ -3,7 +3,8 @@ module Main where
 import Controller
 import Pacman
 import View
-    
+
+
 import Graphics.Gloss.Interface.IO.Game
     
 main :: IO ()
