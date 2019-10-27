@@ -66,11 +66,11 @@ initialState = GameState Paused
                                                 "#.##########.##.##########.#",
                                                 "#..........................#",
                                                 "############################"]))
-                         (Pacman (0,0) W 3)
-                         (Ghost (0,0) W 2)
-                         (Ghost (0,0) W 2)
-                         (Ghost (0,0) W 2)
-                         (Ghost (0,0) W 2)
+                         (Pacman (0,-40) W 3)
+                         (Ghost (0,80) N 2)
+                         (Ghost (80,0) O 2)
+                         (Ghost (80,80) Z 2)
+                         (Ghost (80,-40) W 2)
 
 createMaze :: [[Char]] -> Maze
 createMaze string = map createRows string where

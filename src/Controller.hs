@@ -10,13 +10,48 @@ import Graphics.Gloss.Interface.IO.Game
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
 step _ gstate@(GameState {pacman=(Pacman (x,y) d s), paused=Paused}) = return gstate
-step _ gstate@(GameState {pacman=(Pacman (x,y) d s)}) = case d of
-    N -> return gstate {pacman=Pacman (x,y+s) d s}
-    O -> return gstate {pacman=Pacman (x+s,y) d s}
-    Z -> return gstate {pacman=Pacman (x,y-s) d s}
-    W -> return gstate {pacman=Pacman (x-s,y) d s}
+step _ gstate = 
+  do  pacman' <- (pacmanstep (gstate))
+      blinky' <- (blinkystep (gstate))
+      pinky' <- (pinkystep (gstate))
+      inky' <- (inkystep (gstate))
+      clyde' <- (clydestep (gstate))
+      return gstate {pacman = pacman', blinky = blinky', pinky = pinky', inky = inky', clyde = clyde'}  
 
+pacmanstep :: GameState -> IO Pacman
+pacmanstep gstate@(GameState {pacman=(Pacman (x,y) d s)}) = case d of
+  N -> return (Pacman (x,y+s) d s)
+  O -> return (Pacman (x+s,y) d s)
+  Z -> return (Pacman (x,y-s) d s)
+  W -> return (Pacman (x-s,y) d s)
 
+blinkystep :: GameState -> IO Ghost
+blinkystep gstate@(GameState {blinky =(Ghost (x,y) d s)}) = case d of
+  N -> return (Ghost (x,y+s) d s)
+  O -> return (Ghost (x+s,y) d s)
+  Z -> return (Ghost (x,y-s) d s)
+  W -> return (Ghost (x-s,y) d s)
+
+pinkystep :: GameState -> IO Ghost
+pinkystep gstate@(GameState {pinky =(Ghost (x,y) d s)}) = case d of
+  N -> return (Ghost (x,y+s) d s)
+  O -> return (Ghost (x+s,y) d s)
+  Z -> return (Ghost (x,y-s) d s)
+  W -> return (Ghost (x-s,y) d s)  
+
+inkystep :: GameState -> IO Ghost
+inkystep gstate@(GameState {inky =(Ghost (x,y) d s)}) = case d of
+  N -> return (Ghost (x,y+s) d s)
+  O -> return (Ghost (x+s,y) d s)
+  Z -> return (Ghost (x,y-s) d s)
+  W -> return (Ghost (x-s,y) d s)
+
+clydestep :: GameState -> IO Ghost
+clydestep gstate@(GameState {clyde =(Ghost (x,y) d s)}) = case d of
+  N -> return (Ghost (x,y+s) d s)
+  O -> return (Ghost (x+s,y) d s)
+  Z -> return (Ghost (x,y-s) d s)
+  W -> return (Ghost (x-s,y) d s)
 
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)

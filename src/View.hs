@@ -14,7 +14,15 @@ viewPure gstate = pictures ((pacmanview gstate) : ((pauseview gstate) : ((ghostv
         Playing -> Blank
     pacmanview :: GameState -> Picture 
     pacmanview GameState {pacman = (Pacman (x,y) _ _)} = translate x y (color yellow (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
-    ghostview gstate = []
+    ghostview :: GameState -> [Picture]
+    ghostview GameState { blinky = (Ghost (bx,by) _ _)
+                        , pinky = (Ghost (px,py) _ _)
+                        , inky = (Ghost (ix,iy) _ _)
+                        , clyde = (Ghost (cx,cy) _ _)} =    [ translate bx by (color red (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
+                                                            , translate px py (color rose (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
+                                                            , translate ix iy (color aquamarine (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
+                                                            , translate cx cy (color orange (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))]
+    boardview :: GameState -> [Picture]
     boardview GameState {maze = m} = dots m 0 0 where
         dots :: Maze -> Int -> Int -> [Picture]
         dots m x y 
