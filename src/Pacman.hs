@@ -14,6 +14,13 @@ data Paused = Playing|Paused
 data Pacman = Pacman (Float, Float) Direction Speed
 data Ghost  = Ghost (Float, Float) Direction Speed
 data Field  = M|D|L --Muren, Dots, Leeg
+    deriving (Eq)
+
+instance Show Field where 
+    show M = "#"
+    show D = "."
+    show L = " "    
+
 data Direction = N|O|Z|W --Noord, Oost, Zuid, West
 
 

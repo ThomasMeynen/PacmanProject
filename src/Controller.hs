@@ -26,18 +26,20 @@ pacmanstep gstate@(GameState {pacman=(Pacman (x,y) d s)}) = case d of
   W -> return (Pacman (x-s,y) d s)
 
 blinkystep :: GameState -> IO Ghost
-blinkystep gstate@(GameState {blinky =(Ghost (x,y) d s)}) = case d of
+blinkystep gstate@( GameState {pacman = p
+                  , blinky = g@(Ghost (x,y) d s)
+                  , maze = m}) = case search m (ghostToPos g) (pacmanToPos p) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
-  W -> return (Ghost (x-s,y) d s)
+  W -> return (Ghost (x-s,y) d s)  
 
 pinkystep :: GameState -> IO Ghost
 pinkystep gstate@(GameState {pinky =(Ghost (x,y) d s)}) = case d of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
-  W -> return (Ghost (x-s,y) d s)  
+  W -> return (Ghost (x-s,y) d s) 
 
 inkystep :: GameState -> IO Ghost
 inkystep gstate@(GameState {inky =(Ghost (x,y) d s)}) = case d of
