@@ -1,7 +1,7 @@
 module Controller where
 
 import Pacman
-import BreathFirstSearch
+import BreathFirstSearch2
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
@@ -37,7 +37,7 @@ blinkystep gstate@( GameState {pacman = p
 pinkystep :: GameState -> IO Ghost
 pinkystep gstate@( GameState {pacman = p
                   , pinky = g@(Ghost (x,y) d s)
-                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(0,1)) of
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(0,0)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
@@ -47,7 +47,7 @@ pinkystep gstate@( GameState {pacman = p
 inkystep :: GameState -> IO Ghost
 inkystep gstate@( GameState {pacman = p
                   , inky = g@(Ghost (x,y) d s)
-                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(1,0)) of
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(0,0)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
@@ -57,7 +57,7 @@ inkystep gstate@( GameState {pacman = p
 clydestep :: GameState -> IO Ghost
 clydestep gstate@( GameState {pacman = p
                   , clyde = g@(Ghost (x,y) d s)
-                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(1,1)) of
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(0,0)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
