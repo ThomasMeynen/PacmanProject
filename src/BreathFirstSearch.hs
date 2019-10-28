@@ -11,41 +11,39 @@ module BreathFirstSearch where
     children :: Rose a -> [Rose a]
     children (MkRose a rs) = rs
 
-    search :: Maze -> Ghost -> (Int, Int) -> Direction 
-    search maze ghost@(Ghost (x,y) d s) posto@(px, py) = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
-        -- | length (moves maze (ghostToPos ghost)) == 2 = bestdirection (map (getdirection (ghostToPos ghost)) (moves maze (ghostToPos ghost))) d
-        -- | otherwise = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
-   
-    getdirection :: (Int, Int) -> (Int,Int) -> Direction
-    getdirection (gx,gy) direction@(sx, sy) 
-        | gy < sy = N
-        | gx < sx = O
-        | gy > sy = Z
-        | otherwise = W
-
-    bestdirection :: [Direction] -> Direction -> Direction
-    bestdirection (x:xs:xss) N  | x == Z = xs
-                                | otherwise = x
-    bestdirection (x:xs:xss) O  | x == W = xs
-                                | otherwise = x
-    bestdirection (x:xs:xss) Z  | x == N = xs
-                                | otherwise = x
-    bestdirection (x:xs:xss) W  | x == O = xs
-                                | otherwise = x
-
-    shortestpath :: [(Int, Int)] -> (Int, Int) -> (Int, Int)
-    shortestpath posibilities to = minimum'( map (distance to) posibilities)
-
-    distance :: (Int, Int) -> (Int, Int) -> (Int, (Int, Int))
-    distance from@(x, y) to@(x', y') = ((x-x')^2 + (y-y')^2, to) 
+    search :: Maze -> (Int, Int) -> (Int, Int) -> Direction 
+    search maze posfrom@(gx, gy) posto@(px, py) = origin (gentree (px, py) maze (gx, gy)) where 
+        origin :: Rose (Int, Int) -> Direction
+        origin mazetree = getdirection (mini (zip (getlength mazetree) (map root (children mazetree))))
+        getlength :: Rose (Int, Int) -> [Int]
+        getlength tree = [0] -- map minimum' (map (shortestpath 0) (children tree))
+        shortestpath :: Int -> Rose(Int, Int) -> [Int]
+        shortestpath number (MkRose r []) = [number]
+        shortestpath number tree' = (shortestpath (number + 1)) ((children tree')!!0)
+        getdirection :: (Int, Int) -> Direction
+        getdirection direction@(sx, sy)
+            | gy < sy = N
+            | gx < sx = O
+            | gy > sy = Z
+            | otherwise = W
+        gentree :: (Int, Int) -> Maze -> (Int, Int) -> Rose (Int, Int)
+        gentree posto' board posfrom'
+            | posfrom' == posto' = MkRose posto' [gentree posto' board posfrom']
+            | otherwise = MkRose posfrom' (map (gentree posto' board) (moves board posfrom'))   
     
-    minimum' :: [(Int,(Int, Int))] -> (Int, Int)
+    mini :: [(Int, (Int, Int))] -> (Int, Int)
+    mini (x:[]) = snd x
+    mini (x:(y:ys)) 
+        | fst x <= fst y = mini (x:ys)
+        | otherwise = mini (y:ys)
+    
+    minimum' :: [Int] -> Int
     minimum' list@(x:xs) = minimum x xs 
-            where   minimum (0,y) _ = y
-                    minimum (_,y) [] = y
-                    minimum x@(xs,xss) z@(y@(ys,yss):zs)
-                            | xs <= ys = minimum x zs
-                            | otherwise = minimum y zs  
+            where   minimum (-1) _ = -1
+                    minimum min [] = min
+                    minimum min xs@(y:ys) 
+                            | min <= y = minimum min ys
+                            | otherwise = minimum y ys    
 
     moves :: Maze -> (Int, Int) -> [(Int, Int)]
     moves maze pos@(x,y) = catMaybes [n,e,s,w] where
@@ -57,7 +55,6 @@ module BreathFirstSearch where
     
     checkmove :: Maze -> (Int, Int) -> Maybe (Int, Int)
     checkmove maze pos@(x, y) 
-        | x >= xfields || y >= yfields || x <= 0 || y <= 0 = Nothing
         | ((maze!!y)!!x) == M = Nothing
         | otherwise = Just pos
 
@@ -68,7 +65,6 @@ module BreathFirstSearch where
     ghostToPos (Ghost (x, y) _ _) = divByFieldSize (x, y)
 
     divByFieldSize :: (Float, Float) -> (Int, Int)
-    divByFieldSize (x, y) = (14 + div x,15 + div y) where
+    divByFieldSize (x, y) = (div x, div y) where
         div :: Float -> Int
-        div number | number >= 0 = floor (number / fromIntegral fieldsize :: Float)
-        div number | number < 0 = ceiling (number / fromIntegral fieldsize :: Float)
+        div number = floor (number / fromIntegral fieldsize :: Float)
