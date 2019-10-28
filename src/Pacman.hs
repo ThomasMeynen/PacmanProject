@@ -22,7 +22,13 @@ instance Show Field where
     show L = " "    
 
 data Direction = N|O|Z|W --Noord, Oost, Zuid, West
+    deriving (Eq)
 
+instance Show Direction where
+    show N = "N"
+    show O = "O"
+    show Z = "Z"
+    show W = "W"
 
 type Row   = [Field]
 type Maze  = [Row]
@@ -73,10 +79,10 @@ initialState = GameState Paused
                                                 "#.##########.##.##########.#",
                                                 "#..........................#",
                                                 "############################"]))
-                         (Pacman (0,-40) W 3)
-                         (Ghost (0,80) N 2)
-                         (Ghost (80,0) O 2)
-                         (Ghost (80,80) Z 2)
+                         (Pacman (-20,-40) W 3)
+                         (Ghost (0,80) W 2)
+                         (Ghost (80,0) W 2)
+                         (Ghost (80,80) W 2)
                          (Ghost (80,-40) W 2)
 
 createMaze :: [[Char]] -> Maze

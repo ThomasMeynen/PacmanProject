@@ -28,32 +28,43 @@ pacmanstep gstate@(GameState {pacman=(Pacman (x,y) d s)}) = case d of
 blinkystep :: GameState -> IO Ghost
 blinkystep gstate@( GameState {pacman = p
                   , blinky = g@(Ghost (x,y) d s)
-                  , maze = m}) = case search m (ghostToPos g) (pacmanToPos p) of
+                  , maze = m}) = case search m (g) (pacmanToPos p) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
   W -> return (Ghost (x-s,y) d s)  
 
 pinkystep :: GameState -> IO Ghost
-pinkystep gstate@(GameState {pinky =(Ghost (x,y) d s)}) = case d of
+pinkystep gstate@( GameState {pacman = p
+                  , pinky = g@(Ghost (x,y) d s)
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(0,1)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
-  W -> return (Ghost (x-s,y) d s) 
+  W -> return (Ghost (x-s,y) d s)  
+
 
 inkystep :: GameState -> IO Ghost
-inkystep gstate@(GameState {inky =(Ghost (x,y) d s)}) = case d of
+inkystep gstate@( GameState {pacman = p
+                  , inky = g@(Ghost (x,y) d s)
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(1,0)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
-  W -> return (Ghost (x-s,y) d s)
+  W -> return (Ghost (x-s,y) d s)  
+
 
 clydestep :: GameState -> IO Ghost
-clydestep gstate@(GameState {clyde =(Ghost (x,y) d s)}) = case d of
+clydestep gstate@( GameState {pacman = p
+                  , clyde = g@(Ghost (x,y) d s)
+                  , maze = m}) = case search m (g) (offset(pacmanToPos p)(1,1)) of
   N -> return (Ghost (x,y+s) d s)
   O -> return (Ghost (x+s,y) d s)
   Z -> return (Ghost (x,y-s) d s)
-  W -> return (Ghost (x-s,y) d s)
+  W -> return (Ghost (x-s,y) d s)  
+
+offset :: (Int, Int) -> (Int, Int) -> (Int, Int)
+offset (x,xs) (y,ys) = (x+y, xs+ ys)
 
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
