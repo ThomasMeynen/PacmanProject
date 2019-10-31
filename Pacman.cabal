@@ -20,7 +20,9 @@ executable Pacman
   main-is:             Main.hs
   other-modules:       Controller,
                        Pacman,
-                       View
+                       View,
+                       BreathFirstSearch,
+                       BreathFirstSearch2
   -- other-extensions:
   build-depends:       base >=4.12 && <4.13,
                        gloss,
