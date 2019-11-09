@@ -8,7 +8,8 @@ data GameState = GameState {
     blinky :: Ghost,
     pinky :: Ghost,
     inky :: Ghost,
-    clyde :: Ghost
+    clyde :: Ghost,
+    lives :: Int
     }
 
 type Row   = [Field]
