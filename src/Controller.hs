@@ -12,7 +12,7 @@ import Graphics.Gloss.Interface.IO.Game
 step :: Float -> GameState -> IO GameState
 step _ gstate@(GameState {paused=Paused}) = return gstate
 step _ gstate@(GameState {paused=Playing,buffer=buffer,maze=m,pacman=pacman@(Pacman (x,y) d s),blinky=blinky,pinky=pinky,inky=inky,clyde=clyde })
-  = return gstate {pacman=move (pacmantransformed p buffer),maze=(checkDot m x y), blinky=move blinky, pinky=move pinky, inky=move inky, clyde=move clyde} where
+  = return gstate {pacman=move (pacmantransformed p buffer),maze=(checkDot m x y), blinky=move (blinkytransformed blinky), pinky=move pinky, inky=move inky, clyde=move clyde} where
     p :: Pacman
     p = case checkDirection m d x y of
       Just (True) -> Pacman (x, y) d 0
@@ -21,6 +21,8 @@ step _ gstate@(GameState {paused=Playing,buffer=buffer,maze=m,pacman=pacman@(Pac
     pacmantransformed pac (Buffer newdirection)= case checkDirection m newdirection x y of
         Just (False) -> Pacman (x,y) newdirection basespeed
         otherwise -> pac
+    blinkytransformed :: Ghost -> Ghost
+    blinkytransformed g@(Ghost (x,y) d s) = Ghost (x,y) (search m (g) (pacmanToPos p)) s
 
 
 input :: Event -> GameState -> IO GameState
