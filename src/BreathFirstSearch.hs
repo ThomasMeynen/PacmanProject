@@ -64,7 +64,7 @@ module BreathFirstSearch where
         | otherwise = Just pos
 
     pacmanToPos :: Pacman -> (Int, Int)
-    pacmanToPos (Pacman (x, y) _ _ _) = divByFieldSize (x, y)
+    pacmanToPos (Pacman (x, y) _ _ ) = divByFieldSize (x, y)
 
     ghostToPos :: Ghost -> (Int, Int)
     ghostToPos (Ghost (x, y) _ _) = divByFieldSize (x, y)
