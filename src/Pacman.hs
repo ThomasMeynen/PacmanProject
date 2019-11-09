@@ -1,6 +1,8 @@
 module Pacman where
 
 data GameState = GameState {
+    lives :: Int,
+    score :: Int,
     paused :: Paused,
     buffer :: Buffer,
     maze :: Maze,
@@ -8,8 +10,7 @@ data GameState = GameState {
     blinky :: Ghost,
     pinky :: Ghost,
     inky :: Ghost,
-    clyde :: Ghost,
-    lives :: Int
+    clyde :: Ghost
     }
 
 type Row   = [Field]
@@ -64,9 +65,11 @@ createMaze string = map createRows string where
         | otherwise = L : (createRows xs)
 
 initialState :: GameState
-initialState = GameState Paused
+initialState = GameState 3
+                         0
+                         Paused
                          (Buffer W)
-                         (createMaze (reverse [ "############################",
+                         (createMaze          [ "############################",
                                                 "#............##............#",
                                                 "#.####.#####.##.#####.####.#",
                                                 "#.####.#####.##.#####.####.#",
@@ -96,7 +99,7 @@ initialState = GameState Paused
                                                 "#.##########.##.##########.#",
                                                 "#.##########.##.##########.#",
                                                 "#..........................#",
-                                                "############################"]))
+                                                "############################"])
                          (Pacman (10,(-40)) W basespeed)
                          (Ghost (0,80) N basespeed)
                          (Ghost (80,0) O basespeed)

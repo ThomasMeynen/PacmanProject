@@ -29,7 +29,7 @@ viewPure gstate = pictures ((pacmanview gstate) : ((pauseview gstate) : ((ghostv
         dots m x y 
             | yfields <= y = []
             | xfields <= x = dots m 0 (y+1)
-            | otherwise = [translate (gridToPos x xfields) (gridToPos y yfields) (field ((m!!y)!!x))] ++ dots m (x+1) y where
+            | otherwise = [translate (gridToPos x xfields) ((-1)*(gridToPos y yfields)) (field ((m!!y)!!x))] ++ dots m (x+1) y where
                 field :: Field -> Picture
                 field (M) = color blue (rectangleWire 20 20)
                 field (D) = color white (circleSolid ((fromIntegral fieldsize)/4))

@@ -15,11 +15,16 @@ step _ gstate@(GameState {paused=Playing,buffer=buffer,maze=m,pacman=pacman@(Pac
   = return gstate {pacman=move (pacmantransformed p buffer),maze=(checkDot m x y), blinky=move (blinkytransformed blinky), pinky=move pinky, inky=move inky, clyde=move clyde} where
     p :: Pacman
     p = case checkDirection m d x y of
-      Just (True) -> Pacman (x, y) d 0
-      otherwise -> pacman
+      Just (True) -> Pacman (outOfBounds x, y) d 0
+      otherwise -> Pacman (outOfBounds x, y) d s
     pacmantransformed :: Pacman -> Buffer -> Pacman
     pacmantransformed pac (Buffer newdirection)= case checkDirection m newdirection x y of
         Just (False) -> Pacman (x,y) newdirection basespeed
+        Nothing -> case d of
+          N -> if newdirection == Z then Pacman (x,y) newdirection basespeed else pac
+          Z -> if newdirection == N then Pacman (x,y) newdirection basespeed else pac
+          O -> if newdirection == W then Pacman (x,y) newdirection basespeed else pac
+          W -> if newdirection == O then Pacman (x,y) newdirection basespeed else pac
         otherwise -> pac
     blinkytransformed :: Ghost -> Ghost
     blinkytransformed g@(Ghost (x,y) d s) = Ghost (x,y) (search m (g) (pacmanToPos p)) s

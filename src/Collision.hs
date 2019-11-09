@@ -19,6 +19,12 @@ onEdge _ Nothing         = Nothing
 onEdge (Just x) (Just y) | x == 0 || x == xfields - 1 || y == 0 || y == yfields -1 = Nothing
                          | otherwise                                               = Just (x,y)
 
+outOfBounds :: Float -> Float
+outOfBounds x | x > halfx      = halfx*(-1) + 2
+              | x < halfx*(-1) = halfx - 2 
+              | otherwise      = x where
+  halfx = (fromIntegral xsize / 2)
+
 wallCollision :: Maze -> Direction -> Maybe (Int, Int) -> Maybe Bool --returns true if facing a wall and false otherwise and nothing if the target isn't on a grid position
 wallCollision _ _ Nothing       = Nothing
 wallCollision m d (Just (x,y))  = case d of 
@@ -34,8 +40,12 @@ dotCollision m (Just(x)) (Just(y)) = case (m!!y)!!x of
     D -> m & (element y) . (element x) .~ L
     otherwise -> m
 
+ghostCollision :: Pacman -> Ghost -> Bool
+ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 || abs (py - gy) < 10 = True
+                                                        | otherwise                                = False
+
 checkDirection :: Maze -> Direction -> Float -> Float -> Maybe Bool
-checkDirection m d x y = wallCollision m d (onEdge (posToGrid x xfields) (posToGrid y yfields))
+checkDirection m d x y = wallCollision m d (onEdge (posToGrid x xfields) (posToGrid (y*(-1)) yfields))
 
 checkDot :: Maze -> Float -> Float -> Maze
-checkDot m x y = dotCollision m (posToGrid x xfields) (posToGrid y yfields)
+checkDot m x y = dotCollision m (posToGrid x xfields) (posToGrid (y*(-1)) yfields)
