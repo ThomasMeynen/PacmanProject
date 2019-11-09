@@ -1,10 +1,14 @@
 module Pacman where
 
 import Graphics.Gloss
+import System.IO
+import Control.Monad
+
 data GameState = GameState {
     animation :: Float,
     lives :: Int,
     score :: Int,
+    highscore :: String,
     paused :: Paused,
     buffer :: Buffer,
     maze :: Maze,
@@ -70,10 +74,13 @@ createMaze string = map createRows string where
         | x == '.' = D : (createRows xs)
         | otherwise = L : (createRows xs)
 
-initialState :: GameState
-initialState = GameState 50
+
+
+initialState :: String -> Int -> GameState
+initialState highscore score = GameState 50
                          3
-                         0
+                         score
+                         highscore
                          Paused
                          (Buffer W)
                          (createMaze          [ "############################",
@@ -110,6 +117,6 @@ initialState = GameState 50
                          (Pacman (10,(-40)) W basespeed)
                          (Ghost (0,80) W basespeed)
                          (Ghost (80,0) O basespeed)
-                         (Ghost (80,80) Z basespeed)
+                         (Ghost (80,80) W basespeed)
                          (Ghost (80,-40) W basespeed)
 

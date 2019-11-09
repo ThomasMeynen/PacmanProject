@@ -19,12 +19,12 @@ module BreathFirstSearch where
             | otherwise =  getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
    
     notcenter::(Float,Float) -> Bool
-    notcenter (x,y) = not (div' (x+10) && div' y)
+    notcenter (x,y) = not (div' (x+10) (fromIntegral fieldsize :: Float) && div' y (fromIntegral fieldsize :: Float))
 
-    div' :: Float -> Bool
-    div' pos 
-        | pos >= (fromIntegral fieldsize :: Float) = div' (pos - fromIntegral fieldsize :: Float)
-        | pos < 0 = div' (-pos)
+    div' :: Float -> Float-> Bool
+    div' pos x 
+        | pos >= (x) = div' (pos - x) x
+        | pos < 0 = div' (-pos) x
         | pos == 0 = True
         | otherwise = False
 
@@ -34,6 +34,12 @@ module BreathFirstSearch where
         | gx < sx = O
         | gy < sy = Z
         | otherwise = W
+
+    goTo :: Direction -> (Float,Float)
+    goTo N = (0,-1)
+    goTo O = (1,0)
+    goTo Z = (0,1)
+    goTo W = (-1,0)
 
     bestdirection :: [Direction] -> Direction -> Direction
     bestdirection [x] _ = x
@@ -75,8 +81,8 @@ module BreathFirstSearch where
         | ((maze!!y)!!x) == M = Nothing
         | otherwise = Just pos
 
-    pacmanToPos :: Pacman -> (Int, Int)
-    pacmanToPos (Pacman (x, y) _ _ ) = divByFieldSize (x, y)
+    pacmanToPos :: Pacman -> (Float, Float) -> (Int, Int)
+    pacmanToPos (Pacman (x, y) _ _ ) (xs,ys) = divByFieldSize (x+xs, y+ys)
 
     ghostToPos :: Ghost -> (Int, Int)
     ghostToPos (Ghost (x, y) _ _) = divByFieldSize (x, y)

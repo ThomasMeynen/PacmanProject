@@ -11,6 +11,7 @@ viewPure :: GameState -> Picture
 viewPure (GameState {animation=a,
                      lives=l, 
                      score=points, 
+                     highscore=highpoints,
                      paused=p,
                      buffer=buffer,
                      maze=m,
@@ -23,7 +24,7 @@ viewPure (GameState {animation=a,
     scoreview :: Picture
     scoreview = translate ((fromIntegral xsize / 2)*(-1)) ((fromIntegral ysize / 2)+3) (scale 0.15 0.15 (color white (text ("Score: "++(show points)))))
     highscoreview :: Picture
-    highscoreview = Blank
+    highscoreview = translate ((fromIntegral xsize / 2 - 200)*(-1)) ((fromIntegral ysize / 2)+3) (scale 0.15 0.15 (color white (text ("Highscore: "++(show (max points (read highpoints :: Int)))))))
     livesview :: Int -> [Picture]
     livesview 0 = [translate ((fromIntegral xsize / 2)-140) ((fromIntegral ysize / 2)+3) (scale 0.15 0.15 (color white (text ("Lives:"))))]
     livesview x = (translate ((fromIntegral xsize / 2)-105+(30*fromIntegral x)) ((fromIntegral ysize / 2)+10) (color yellow (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))) : livesview (x-1)
