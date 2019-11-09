@@ -27,7 +27,7 @@ step _ gstate@(GameState {lives=l,
   (Buffer W) 
   m 
   (Pacman (10,(-40)) W basespeed)
-  (Ghost (0,80) N basespeed)
+  (Ghost (0,80) W basespeed)
   (Ghost (80,0) O basespeed)
   (Ghost (80,80) Z basespeed)
   (Ghost (80,-40) W basespeed)) 

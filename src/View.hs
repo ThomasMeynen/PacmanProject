@@ -30,7 +30,7 @@ viewPure (GameState {lives=l,
     pauseview = case p of
         Paused -> translate (-200) (200) (color green (text ("Paused")))
         GameOver -> translate (-50) (-47) (scale 0.15 0.15 (color red (text ("Game Over"))))
-        Playing -> Blank
+        otherwise -> Blank
     pacmanview :: Picture 
     pacmanview = case p of 
         GameOver -> Blank

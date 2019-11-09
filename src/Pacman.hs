@@ -17,7 +17,7 @@ data GameState = GameState {
 type Row   = [Field]
 type Maze  = [Row]
 type Speed = Float
-data Paused = Playing|Paused|GameOver
+data Paused = Playing|Paused|GameOver|Dood
   deriving (Eq)
 data Pacman = Pacman (Float, Float) Direction Speed
 data Ghost  = Ghost (Float, Float) Direction Speed
@@ -106,7 +106,7 @@ initialState = GameState 3
                                                 "#..........................#",
                                                 "############################"])
                          (Pacman (10,(-40)) W basespeed)
-                         (Ghost (0,80) N basespeed)
+                         (Ghost (0,80) W basespeed)
                          (Ghost (80,0) O basespeed)
                          (Ghost (80,80) Z basespeed)
                          (Ghost (80,-40) W basespeed)
