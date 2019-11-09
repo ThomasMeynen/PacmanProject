@@ -2,7 +2,8 @@ module BreathFirstSearch where
 
     import Pacman
     import Data.Maybe
-
+    import Collision
+    
     data Rose a = MkRose a [Rose a]
 
     root :: Rose a -> a
@@ -12,10 +13,21 @@ module BreathFirstSearch where
     children (MkRose a rs) = rs
 
     search :: Maze -> Ghost -> (Int, Int) -> Direction 
-    search maze ghost@(Ghost (x,y) d s) posto@(px, py)  = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
-        -- | length (moves maze (ghostToPos ghost)) <= 3 = bestdirection (map (getdirection (ghostToPos ghost)) (moves maze (ghostToPos ghost))) d
-        -- | otherwise = undefined -- getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
+    search maze ghost@(Ghost (x,y) d s) posto@(px, py) -- = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
+            | notcenter(x,y) = d
+            | length (moves maze (ghostToPos ghost)) < 3 = bestdirection (map (getdirection (ghostToPos ghost)) (moves maze (ghostToPos ghost))) d
+            | otherwise =  getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
    
+    notcenter::(Float,Float) -> Bool
+    notcenter (x,y) = not (div' (x+10) && div' y)
+
+    div' :: Float -> Bool
+    div' pos 
+        | pos >= (fromIntegral fieldsize :: Float) = div' (pos - fromIntegral fieldsize :: Float)
+        | pos < 0 = div' (-pos)
+        | pos == 0 = True
+        | otherwise = False
+
     getdirection :: (Int, Int) -> (Int,Int) -> Direction
     getdirection (gx,gy) direction@(sx, sy) 
         | gy > sy = N
@@ -24,6 +36,7 @@ module BreathFirstSearch where
         | otherwise = W
 
     bestdirection :: [Direction] -> Direction -> Direction
+    bestdirection [x] _ = x
     bestdirection (x:xs:xss) N  | x == Z = xs
                                 | otherwise = x
     bestdirection (x:xs:xss) O  | x == W = xs
@@ -63,14 +76,18 @@ module BreathFirstSearch where
         | otherwise = Just pos
 
     pacmanToPos :: Pacman -> (Int, Int)
-    pacmanToPos (Pacman (x, y) _ _) = divByFieldSize (x, y)
+    pacmanToPos (Pacman (x, y) _ _ ) = divByFieldSize (x, y)
 
     ghostToPos :: Ghost -> (Int, Int)
     ghostToPos (Ghost (x, y) _ _) = divByFieldSize (x, y)
 
     divByFieldSize :: (Float, Float) -> (Int, Int)
-    divByFieldSize (x, y) = (14 + div x, 15 - div y) where
-        div :: Float -> Int
-        div number 
+    divByFieldSize (x, y) = (14 + divx (x), 15 - divy y) where
+        divx :: Float -> Int
+        divx number 
             | number >= 0 = floor (number / fromIntegral fieldsize :: Float)
-            | otherwise = ceiling (number / fromIntegral fieldsize :: Float)
+            | otherwise = floor  (number / fromIntegral fieldsize :: Float)
+        divy :: Float -> Int
+        divy number 
+            | number >= 0 = ceiling (number / fromIntegral fieldsize :: Float)
+            | otherwise = floor  (number / fromIntegral fieldsize :: Float)
