@@ -2,7 +2,8 @@ module BreathFirstSearch where
 
     import Pacman
     import Data.Maybe
-
+    import Collision
+    
     data Rose a = MkRose a [Rose a]
 
     root :: Rose a -> a
@@ -12,9 +13,9 @@ module BreathFirstSearch where
     children (MkRose a rs) = rs
 
     search :: Maze -> Ghost -> (Int, Int) -> Direction 
-    search maze ghost@(Ghost (x,y) d s) posto@(px, py)  = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
-        -- | length (moves maze (ghostToPos ghost)) <= 3 = bestdirection (map (getdirection (ghostToPos ghost)) (moves maze (ghostToPos ghost))) d
-        -- | otherwise = undefined -- getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
+    search maze ghost@(Ghost (x,y) d s) posto@(px, py) -- = getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
+         | length (moves maze (ghostToPos ghost)) < 3 = bestdirection (map (getdirection (ghostToPos ghost)) (moves maze (ghostToPos ghost))) d
+         | otherwise =  getdirection (ghostToPos ghost) (shortestpath( moves maze (ghostToPos ghost)) posto) 
    
     getdirection :: (Int, Int) -> (Int,Int) -> Direction
     getdirection (gx,gy) direction@(sx, sy) 
@@ -63,14 +64,14 @@ module BreathFirstSearch where
         | otherwise = Just pos
 
     pacmanToPos :: Pacman -> (Int, Int)
-    pacmanToPos (Pacman (x, y) _ _) = divByFieldSize (x, y)
+    pacmanToPos (Pacman (x, y) _ _ _) = divByFieldSize (x, y)
 
     ghostToPos :: Ghost -> (Int, Int)
     ghostToPos (Ghost (x, y) _ _) = divByFieldSize (x, y)
 
     divByFieldSize :: (Float, Float) -> (Int, Int)
-    divByFieldSize (x, y) = (14 + div x, 15 - div y) where
+    divByFieldSize (x, y) = (14 + div (x), 15 - div y) where
         div :: Float -> Int
         div number 
-            | number >= 0 = floor (number / fromIntegral fieldsize :: Float)
-            | otherwise = ceiling (number / fromIntegral fieldsize :: Float)
+            | number >= 0 = ceiling (number / fromIntegral fieldsize :: Float)
+            | otherwise = floor  (number / fromIntegral fieldsize :: Float)
