@@ -8,7 +8,8 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure (GameState {lives=l, 
+viewPure (GameState {animation=a,
+                     lives=l, 
                      score=points, 
                      paused=p,
                      buffer=buffer,
@@ -34,9 +35,9 @@ viewPure (GameState {lives=l,
     pacmanview :: Picture 
     pacmanview = case p of 
         GameOver -> Blank
-        otherwise -> draw pacman yellow
+        otherwise -> draw a pacman yellow
     ghostview :: [Picture]
-    ghostview = [draw blinky red, draw pinky rose, draw inky aquamarine, draw clyde orange]
+    ghostview = [draw 0 blinky red, draw 0 pinky rose, draw 0 inky aquamarine, draw 0 clyde orange]
     boardview :: [Picture]
     boardview = dots m 0 0 where
         dots :: Maze -> Int -> Int -> [Picture]

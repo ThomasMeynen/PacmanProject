@@ -20,18 +20,7 @@ step _ gstate@(GameState {lives=l,
                           pinky=pinky,
                           inky=inky,
                           clyde=clyde})
-  | hitAGhost && l>1 = return 
-  (GameState (l-1) 
-  points 
-  Paused 
-  (Buffer W) 
-  m 
-  (Pacman (10,(-40)) W basespeed)
-  (Ghost (0,80) W basespeed)
-  (Ghost (80,0) O basespeed)
-  (Ghost (80,80) Z basespeed)
-  (Ghost (80,-40) W basespeed)) 
-  | hitAGhost   = return gstate {lives=0, paused=GameOver}
+  | hitAGhost = return gstate {paused=Dood}
   | otherwise   = return gstate {pacman=move (pacmanturn pacmanwall buffer),
                                  score=points+(fst eaten),
                                  maze=snd eaten, 
@@ -59,6 +48,29 @@ step _ gstate@(GameState {lives=l,
       blinkytransformed g@(Ghost (x,y) d s) = Ghost (x,y) (search m (g) (pacmanToPos pacmanwall)) s
       hitAGhost :: Bool
       hitAGhost = (ghostCollision pacman blinky) || (ghostCollision pacman pinky) || (ghostCollision pacman inky) || (ghostCollision pacman clyde)
+step _ gstate@(GameState {animation=a,
+                          lives=l, 
+                          score=points, 
+                          paused=Dood,
+                          buffer=buffer,
+                          maze=m,
+                          pacman=pacman@(Pacman (x,y) d s),
+                          blinky=blinky,
+                          pinky=pinky,
+                          inky=inky,
+                          clyde=clyde}) | a>0 = return gstate {animation=a-1} 
+                                        | l>1 = return (GameState 50
+                                                        (l-1) 
+                                                        points 
+                                                        Paused 
+                                                        (Buffer W) 
+                                                        m 
+                                                        (Pacman (10,(-40)) W basespeed)
+                                                        (Ghost (0,80) W basespeed)
+                                                        (Ghost (80,0) O basespeed)
+                                                        (Ghost (80,80) Z basespeed)
+                                                        (Ghost (80,-40) W basespeed)) 
+                                        | otherwise = return gstate {lives=(l-1),paused=GameOver}
 step _ gstate = return gstate 
 
 input :: Event -> GameState -> IO GameState

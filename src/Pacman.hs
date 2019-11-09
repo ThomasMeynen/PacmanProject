@@ -2,6 +2,7 @@ module Pacman where
 
 import Graphics.Gloss
 data GameState = GameState {
+    animation :: Float,
     lives :: Int,
     score :: Int,
     paused :: Paused,
@@ -29,7 +30,7 @@ data Buffer    = Buffer Direction
 
 class Movables a where
   move :: a -> a
-  draw :: a -> Color -> Picture
+  draw :: Float -> a -> Color -> Picture
 
 instance Movables Pacman where
   move (Pacman (x,y) d s) = case d of
@@ -37,7 +38,7 @@ instance Movables Pacman where
     O -> Pacman (x+s,y) d s
     Z -> Pacman (x,y-s) d s
     W -> Pacman (x-s,y) d s
-  draw (Pacman (x,y) _ _) c = translate x y (color c (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
+  draw i (Pacman (x,y) _ _) c =  translate x y (color c (circleSolid ((fromIntegral fieldsize) * i / 100 - 1 )))
 
 instance Movables Ghost where
   move (Ghost (x,y) d s) = case d of
@@ -45,7 +46,7 @@ instance Movables Ghost where
     O -> Ghost (x+s,y) d s
     Z -> Ghost (x,y-s) d s
     W -> Ghost (x-s,y) d s
-  draw (Ghost (x,y) _ _) c = translate x y (color c (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
+  draw _ (Ghost (x,y) _ _) c = translate x y (color c (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
 
 basespeed :: Speed
 basespeed = 2
@@ -70,7 +71,8 @@ createMaze string = map createRows string where
         | otherwise = L : (createRows xs)
 
 initialState :: GameState
-initialState = GameState 3
+initialState = GameState 50
+                         3
                          0
                          Paused
                          (Buffer W)
