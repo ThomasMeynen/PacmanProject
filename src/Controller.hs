@@ -33,12 +33,15 @@ step _ gstate@(GameState {lives=l,
   (Ghost (80,-40) W basespeed)) 
   | hitAGhost   = return gstate {lives=0, paused=GameOver}
   | otherwise   = return gstate {pacman=move (pacmanturn pacmanwall buffer),
-                                 maze=(checkDot m x y), 
+                                 score=points+(fst eaten),
+                                 maze=snd eaten, 
                                  blinky=move (blinkytransformed blinky), 
                                  pinky=move pinky, 
                                  inky=move inky, 
                                  clyde=move clyde} 
     where
+      eaten :: (Int, Maze)
+      eaten = checkDot m x y
       pacmanwall :: Pacman --Checks if pacman walks into a wall or out of bounds and returns an updated pacman base on results
       pacmanwall = case checkDirection m d x y of
         Just (True) -> Pacman (outOfBounds x, y) d 0
@@ -56,7 +59,7 @@ step _ gstate@(GameState {lives=l,
       blinkytransformed g@(Ghost (x,y) d s) = Ghost (x,y) (search m (g) (pacmanToPos pacmanwall)) s
       hitAGhost :: Bool
       hitAGhost = (ghostCollision pacman blinky) || (ghostCollision pacman pinky) || (ghostCollision pacman inky) || (ghostCollision pacman clyde)
-step _ gstate = return gstate
+step _ gstate = return gstate 
 
 input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)

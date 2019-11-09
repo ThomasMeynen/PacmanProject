@@ -33,12 +33,12 @@ wallCollision m d (Just (x,y))  = case d of
     Z -> Just ((m!!(y+1))!!x == M)
     W -> Just ((m!!y)!!(x-1) == M)
 
-dotCollision :: Maze -> Maybe Int -> Maybe Int -> Maze
-dotCollision m Nothing _ = m
-dotCollision m _ Nothing = m
+dotCollision :: Maze -> Maybe Int -> Maybe Int -> (Int, Maze)
+dotCollision m Nothing _ = (0, m)
+dotCollision m _ Nothing = (0, m)
 dotCollision m (Just(x)) (Just(y)) = case (m!!y)!!x of
-    D -> m & (element y) . (element x) .~ L
-    otherwise -> m
+    D -> (10, m & (element y) . (element x) .~ L)
+    otherwise -> (0, m)
 
 ghostCollision :: Pacman -> Ghost -> Bool
 ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 && abs (py - gy) < 10 = True
@@ -47,5 +47,5 @@ ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 && 
 checkDirection :: Maze -> Direction -> Float -> Float -> Maybe Bool
 checkDirection m d x y = wallCollision m d (onEdge (posToGrid x xfields) (posToGrid (y*(-1)) yfields))
 
-checkDot :: Maze -> Float -> Float -> Maze
+checkDot :: Maze -> Float -> Float -> (Int, Maze)
 checkDot m x y = dotCollision m (posToGrid x xfields) (posToGrid (y*(-1)) yfields)
