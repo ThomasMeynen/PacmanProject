@@ -22,10 +22,11 @@ executable Pacman
                        Pacman,
                        View,
                        BreathFirstSearch,
-                       BreathFirstSearch2
+                       Collision
   -- other-extensions:
   build-depends:       base >=4.12 && <4.13,
                        gloss,
-                       random
+                       random,
+                       lens
   hs-source-dirs:      src
   default-language:    Haskell2010
