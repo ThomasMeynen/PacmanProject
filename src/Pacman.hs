@@ -20,6 +20,7 @@ data Ghost  = Ghost (Float, Float) Direction Speed
 data Field  = M|D|L --Muren, Dots, Leeg
   deriving (Eq)
 data Direction = N|O|Z|W --Noord, Oost, Zuid, West
+  deriving (Eq)
 data Buffer    = Buffer Direction
 
 class Movables a where
