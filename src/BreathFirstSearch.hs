@@ -16,7 +16,7 @@ module BreathFirstSearch where
         origin :: Rose (Int, Int) -> Direction
         origin mazetree = getdirection (mini (zip (getlength mazetree) (map root (children mazetree))))
         getlength :: Rose (Int, Int) -> [Int]
-        getlength tree = [0] -- map minimum' (map (shortestpath 0) (children tree))
+        getlength tree = map minimum' (map (shortestpath 0) (children tree))
         shortestpath :: Int -> Rose(Int, Int) -> [Int]
         shortestpath number (MkRose r []) = [number]
         shortestpath number tree' = (shortestpath (number + 1)) ((children tree')!!0)
