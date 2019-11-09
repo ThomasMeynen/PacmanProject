@@ -1,5 +1,6 @@
 module Pacman where
 
+import Graphics.Gloss
 data GameState = GameState {
     lives :: Int,
     score :: Int,
@@ -16,7 +17,8 @@ data GameState = GameState {
 type Row   = [Field]
 type Maze  = [Row]
 type Speed = Float
-data Paused = Playing|Paused
+data Paused = Playing|Paused|GameOver
+  deriving (Eq)
 data Pacman = Pacman (Float, Float) Direction Speed
 data Ghost  = Ghost (Float, Float) Direction Speed
 data Field  = M|D|L --Muren, Dots, Leeg
@@ -27,6 +29,7 @@ data Buffer    = Buffer Direction
 
 class Movables a where
   move :: a -> a
+  draw :: a -> Color -> Picture
 
 instance Movables Pacman where
   move (Pacman (x,y) d s) = case d of
@@ -34,6 +37,7 @@ instance Movables Pacman where
     O -> Pacman (x+s,y) d s
     Z -> Pacman (x,y-s) d s
     W -> Pacman (x-s,y) d s
+  draw (Pacman (x,y) _ _) c = translate x y (color c (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
 
 instance Movables Ghost where
   move (Ghost (x,y) d s) = case d of
@@ -41,6 +45,7 @@ instance Movables Ghost where
     O -> Ghost (x+s,y) d s
     Z -> Ghost (x,y-s) d s
     W -> Ghost (x-s,y) d s
+  draw (Ghost (x,y) _ _) c = translate x y (color c (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
 
 basespeed :: Speed
 basespeed = 2

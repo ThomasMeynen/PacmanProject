@@ -41,7 +41,7 @@ dotCollision m (Just(x)) (Just(y)) = case (m!!y)!!x of
     otherwise -> m
 
 ghostCollision :: Pacman -> Ghost -> Bool
-ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 || abs (py - gy) < 10 = True
+ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 && abs (py - gy) < 10 = True
                                                         | otherwise                                = False
 
 checkDirection :: Maze -> Direction -> Float -> Float -> Maybe Bool

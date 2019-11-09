@@ -8,23 +8,36 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gstate = pictures ((pacmanview gstate) : ((pauseview gstate) : ((ghostview gstate) ++ (boardview gstate)))) where
-    pauseview :: GameState -> Picture
-    pauseview GameState {paused=p} = case p of
+viewPure (GameState {lives=l, 
+                     score=points, 
+                     paused=p,
+                     buffer=buffer,
+                     maze=m,
+                     pacman=pacman@(Pacman (x,y) d s),
+                     blinky=blinky,
+                     pinky=pinky,
+                     inky=inky,
+                     clyde=clyde})
+  = pictures (boardview++ghostview++[highscoreview]++[pacmanview]++[livesview]++[scoreview]++[pauseview]) where
+    scoreview :: Picture
+    scoreview = translate ((fromIntegral xsize / 2)*(-1)) ((fromIntegral ysize / 2)+3) (scale 0.15 0.15 (color white (text ("Score: "++(show points)))))
+    highscoreview :: Picture
+    highscoreview = Blank
+    livesview :: Picture
+    livesview = Blank
+    pauseview :: Picture
+    pauseview = case p of
         Paused -> translate (-200) (200) (color green (text ("Paused")))
+        GameOver -> translate (-50) (-47) (scale 0.15 0.15 (color red (text ("Game Over"))))
         Playing -> Blank
-    pacmanview :: GameState -> Picture 
-    pacmanview GameState {pacman = (Pacman (x,y) _ _)} = translate x y (color yellow (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
-    ghostview :: GameState -> [Picture]
-    ghostview GameState { blinky = (Ghost (bx,by) _ _)
-                        , pinky = (Ghost (px,py) _ _)
-                        , inky = (Ghost (ix,iy) _ _)
-                        , clyde = (Ghost (cx,cy) _ _)} =    [ translate bx by (color red (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
-                                                            , translate px py (color rose (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
-                                                            , translate ix iy (color aquamarine (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))
-                                                            , translate cx cy (color orange (circleSolid ((fromIntegral fieldsize) / 2 - 1 )))]
-    boardview :: GameState -> [Picture]
-    boardview GameState {maze = m} = dots m 0 0 where
+    pacmanview :: Picture 
+    pacmanview = case p of 
+        GameOver -> Blank
+        otherwise -> draw pacman yellow
+    ghostview :: [Picture]
+    ghostview = [draw blinky red, draw pinky rose, draw inky aquamarine, draw clyde orange]
+    boardview :: [Picture]
+    boardview = dots m 0 0 where
         dots :: Maze -> Int -> Int -> [Picture]
         dots m x y 
             | yfields <= y = []
