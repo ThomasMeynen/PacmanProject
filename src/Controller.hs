@@ -33,7 +33,7 @@ step _ gstate@(GameState {lives=l,
       where
       won :: Bool
       won | points == 0 = False
-          | otherwise = (mod points 3000) == 0
+          | otherwise = (mod points 2990) == 0
       eaten :: (Int, Maze)
       eaten = checkDot m x y
       pacmandir :: Direction 
