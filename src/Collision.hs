@@ -1,7 +1,7 @@
 module Collision where
 
 import Pacman
-import Control.Lens
+import Control.Lens (element, (.~))
 
 gridToPos :: Int -> Int -> Float -- Takes a position in the grid [0 .. xfields/yfields] and an amount of fields and transforms to the correct screen position.
 gridToPos i f | mod i 2 == 0 = (fromIntegral fieldsize / 2) + (fromIntegral i - (fromIntegral f / 2)) * fromIntegral fieldsize
