@@ -86,7 +86,7 @@ step _ gstate@(GameState {animation=a,
                                                         (Ghost (80,0) O basespeed)
                                                         (Ghost (80,80) W basespeed)
                                                         (Ghost (80,-40) W basespeed)) 
-                                        | otherwise = do  writeFile "highscore.txt" (show points)
+                                        | otherwise = do  writeFile "highscore.txt" (show (max points (read highscore :: Int)))
                                                           return gstate {lives=(l-1),paused=GameOver}
 step _ gstate = return gstate 
 
