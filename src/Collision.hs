@@ -19,7 +19,7 @@ onEdge _ Nothing         = Nothing
 onEdge (Just x) (Just y) | x == 0 || x == xfields - 1 || y == 0 || y == yfields -1 = Nothing
                          | otherwise                                               = Just (x,y)
 
-outOfBounds :: Float -> Float
+outOfBounds :: Float -> Float --check if pacman is walking outside of the screen and moves him back onto the otherside if so
 outOfBounds x | x > halfx      = halfx*(-1) + 2
               | x < halfx*(-1) = halfx - 2 
               | otherwise      = x where
@@ -33,19 +33,19 @@ wallCollision m d (Just (x,y))  = case d of
     Z -> Just ((m!!(y+1))!!x == M)
     W -> Just ((m!!y)!!(x-1) == M)
 
-dotCollision :: Maze -> Maybe Int -> Maybe Int -> (Int, Maze)
+dotCollision :: Maze -> Maybe Int -> Maybe Int -> (Int, Maze) --given a maze checks if pacman is on a dot and returns a scoreupdate and mazeupdate accordingly
 dotCollision m Nothing _ = (0, m)
 dotCollision m _ Nothing = (0, m)
 dotCollision m (Just(x)) (Just(y)) = case (m!!y)!!x of
     D -> (10, m & (element y) . (element x) .~ L)
     otherwise -> (0, m)
 
-ghostCollision :: Pacman -> Ghost -> Bool
+ghostCollision :: Pacman -> Ghost -> Bool --checks the distance between pacman and a ghost. Returns True if pacman is too close
 ghostCollision (Pacman (px,py) _ _) (Ghost (gx,gy) _ _) | abs (px - gx) < 10 && abs (py - gy) < 10 = True
                                                         | otherwise                                = False
 
-checkDirection :: Maze -> Direction -> Float -> Float -> Maybe Bool
+checkDirection :: Maze -> Direction -> Float -> Float -> Maybe Bool --Checks wallcollision in a direction given a location on the screen
 checkDirection m d x y = wallCollision m d (onEdge (posToGrid x xfields) (posToGrid (y*(-1)) yfields))
 
-checkDot :: Maze -> Float -> Float -> (Int, Maze)
+checkDot :: Maze -> Float -> Float -> (Int, Maze) --checks if pacman is on a dot. using dotCollision
 checkDot m x y = dotCollision m (posToGrid x xfields) (posToGrid (y*(-1)) yfields)
